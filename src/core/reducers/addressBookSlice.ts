@@ -19,6 +19,9 @@ export const addressBookSlice = createSlice({
   reducers: {
     addAddress: (state, action: PayloadAction<Address>) => {
       /** TODO: Prevent duplicate addresses */
+      if (state.addresses.find((addr) => addr.id === action.payload.id)) {
+        return;
+      }
       state.addresses.push(action.payload);
     },
     removeAddress: (state, action: PayloadAction<string>) => {

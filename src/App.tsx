@@ -11,6 +11,8 @@ import useAddressBook from "@/hooks/useAddressBook";
 import styles from "./App.module.css";
 import { Address as AddressType } from "./types";
 
+import transformAddress, { RawAddressModel } from "./core/models/address";
+
 function App() {
   /**
    * Form fields states
@@ -25,6 +27,7 @@ function App() {
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [selectedAddress, setSelectedAddress] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   /**
    * Results states
    */
@@ -65,6 +68,42 @@ function App() {
    */
   const handleAddressSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setSelectedAddress("");
+    setAddresses([]);
+    setError(undefined);
+    setLoading(true);
+
+    try {
+      const url = `${process.env.NEXT_PUBLIC_URL}/api/getAddresses?postcode=${postCode}&streetnumber=${houseNumber}`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => null);
+        setError(errData?.errormessage ?? `Error: ${response.status} ${response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+      console.log(data);
+      if (data.status === "error") {
+        setError(data.errormessage ?? "Unknown error");
+        return;
+      }
+
+
+      const transformedAddresses: AddressType[] = (data.details ?? []).map((addr: RawAddressModel, index: number) => {
+        const transformed = transformAddress(addr);
+        return { ...transformed, id: (index + 1).toString(), houseNumber: houseNumber };
+      });
+
+      setAddresses(transformedAddresses);
+    } catch (err) {
+      setError("Failed to fetch addresses");
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   /** TODO: Add basic validation to ensure first name and last name fields aren't empty
@@ -73,13 +112,18 @@ function App() {
   const handlePersonSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!firstName.trim() || !lastName.trim()) {
+      setError("First name and last name fields mandatory!");
+      return;
+    }
+
     if (!selectedAddress || !addresses.length) {
       setError(
         "No address selected, try to select an address or find one if you haven't"
       );
       return;
     }
-
+    console.log({ selectedAddress, addresses });
     const foundAddress = addresses.find(
       (address) => address.id === selectedAddress
     );
@@ -122,7 +166,7 @@ function App() {
                 placeholder="House number"
               />
             </div>
-            <Button type="submit">Find</Button>
+            <Button loading={loading} type="submit">Find</Button>
           </fieldset>
         </form>
         {addresses.length > 0 &&
@@ -173,6 +217,10 @@ function App() {
         On Click, it must clear all form fields, remove all search results and clear all prior
         error messages
         */}
+        <Button variant="secondary" onClick={()=>{
+          //Clear all form fields
+         
+        }}>Clear all fields</Button>
       </Section>
 
       <Section variant="dark">

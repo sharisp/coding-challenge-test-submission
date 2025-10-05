@@ -10,7 +10,7 @@ In order to start this assignment you need to:
 
 - ⬇️ Clone this repository
 - 👨‍💻 Open up your preferred editor (mine is VS Code)
-- 🏃🏻‍♂️ Run `npm install` and then `npm start`
+- 🏃🏻‍♂️ Run `npm install` and then `npm run build`,then `npm start`
 - 🔎 Search for all `TODO:` strings within the `/src` folder and start building!
 
 > Note: You will find some Bonus TODO's. These are not mandatory for completing this assignment. Feel free to flex your programming skills 💪

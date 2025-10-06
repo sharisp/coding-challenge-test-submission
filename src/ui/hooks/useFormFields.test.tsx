@@ -2,13 +2,9 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import React from "react";
 import { useFormFields } from "./useFormFields";
 
-interface FormValues {
-  postCode: string;
-  houseNumber: string;
-}
 
 const TestComponent: React.FC = () => {
-  const { fields, onFieldChange, onClear } = useFormFields<FormValues>({
+  const { fields, onFieldChange, onClear } = useFormFields({
     postCode: "",
     houseNumber: "",
   });

@@ -4,7 +4,7 @@ import Button from '../Button/Button';
 import InputText from '../InputText/InputText';
 import $ from './Form.module.css';
 interface ExtraInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  value: string;
+  value?: string;
 }
 interface FormEntry {
   name: string;

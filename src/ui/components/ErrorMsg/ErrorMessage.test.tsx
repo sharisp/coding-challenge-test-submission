@@ -1,11 +1,11 @@
-// __tests__/ErrorMsg.test.tsx
+
 import { render, screen } from '@testing-library/react';
 import ErrorMessage from '@/components/ErrorMsg/ErrorMsg';
 
 describe('ErrorMessage component', () => {
   it('renders nothing when message is undefined', () => {
     render(<ErrorMessage message={undefined} />);
-    // 检查 DOM 中没有 error 元素
+   
     const errorDiv = screen.queryByText(/./); 
     expect(errorDiv).toBeNull();
   });
